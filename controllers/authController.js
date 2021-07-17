@@ -1,21 +1,53 @@
 const bcrypt = require('bcryptjs');
+const { generarJsonWebToken } = require('../helpers/jwt');
 const User = require('../models/user');
 
 const getUsers = async (req, res) => {
+  const { authUser } = req;
   const { desde = 0, limite = 5 } = req.query;
   const query = { status: true };
   const [total_registros, users] = await Promise.all([User.countDocuments(query), User.find(query).skip(Number(desde)).limit(Number(limite))]);
 
   return res.json({
+    authUser,
     total_registros,
     data: users,
   });
 };
 
-const login = (req, res) => {
-  return res.json({
-    data: 'AuthUser',
-  });
+const login = async (req, res) => {
+  const { email, password } = req.body;
+  const user = await User.findOne({ email });
+
+  try {
+    if (!user) {
+      return res.status(400).json({
+        message: 'El credenciales incorrectas: email',
+      });
+    }
+    if (!user.status) {
+      return res.status(400).json({
+        message: 'El credenciales incorrectas: status',
+      });
+    }
+
+    if (!bcrypt.compareSync(password, user.password)) {
+      return res.status(400).json({
+        message: 'El credenciales incorrectas: password',
+      });
+    }
+
+    const token = await generarJsonWebToken(user._id);
+    res.json({
+      user,
+      token,
+    });
+  } catch (error) {
+    console.log(error);
+    res.json({
+      message: 'Error en el servidor',
+    });
+  }
 };
 
 const register = async (req, res) => {

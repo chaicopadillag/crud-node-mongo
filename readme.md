@@ -1,6 +1,7 @@
 # Files System Project
 
 ```
+APP
 ├── app.js
 ├── controllers
 │   └── authController.js
@@ -8,11 +9,15 @@
 │   └── dbConexion.js
 ├── example.env
 ├── helpers
+│   ├── googleAuth.js
+│   └── jwt.js
 ├── middlewares
-│   ├── authRegisterValidations.js
+│   ├── authMiddleware.js
 │   ├── fieldsDbValidations
-│   │   └── authValidations.js
-│   └── fieldsValidations.js
+│   │   ├── authValidations.js
+│   │   └── roleValidations.js
+│   ├── fieldsValidations.js
+│   └── tokenMiddleware.js
 ├── models
 │   ├── role.js
 │   ├── server.js
@@ -21,8 +26,10 @@
 ├── package-lock.json
 ├── public
 │   └── index.html
+├── readme.md
 └── routers
     ├── authRouter.js
     └── rootRouter.js
+
 
 ```

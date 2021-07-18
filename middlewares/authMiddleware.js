@@ -11,6 +11,7 @@ const authRegisterValidations = [
   check('role').custom(roleValidation),
   fieldsValidations,
 ];
+
 const authUserUpdateValidations = [
   check('userId', 'El ID no es válido').isMongoId().custom(existUserById),
   check('name', 'El nombre es requerido').not().isEmpty(),
@@ -30,4 +31,12 @@ const authUserDeleteValidations = [
 
 const authLoginValidations = [check('email', 'El correo electrónico no es válido').isEmail(), check('password', 'La contraseña es requerido').not().isEmpty(), fieldsValidations];
 
-module.exports = { authRegisterValidations, authUserUpdateValidations, authUserDeleteValidations, authLoginValidations };
+const authLoginGoogleValidations = [check('google_token', 'El token Ó el key del google es requerido').not().isEmpty(), fieldsValidations];
+
+module.exports = {
+  authRegisterValidations,
+  authUserUpdateValidations,
+  authUserDeleteValidations,
+  authLoginValidations,
+  authLoginGoogleValidations,
+};

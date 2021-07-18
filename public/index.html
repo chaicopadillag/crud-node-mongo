@@ -5,12 +5,49 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="google-signin-client_id" content="563609195192-6plon0csqr6hsmvk6t4otrilligsb5hh.apps.googleusercontent.com">
     <title>Super Cafe</title>
 </head>
 
 <body>
     <h2>Super Caffé</h2>
     <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Exercitationem quia dolore autem amet natus sapiente ipsum iusto sed deserunt adipisci, totam ullam consectetur in, quod quaerat? Quos libero repellendus amet.</p>
+    <div class="g-signin2" data-onsuccess="onSignIn"></div>
+    <a href="#" onclick="signOut();">Sign out</a>
+
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <script>
+        function onSignIn(googleUser) {
+            var profile = googleUser.getBasicProfile();
+            console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
+            console.log('Name: ' + profile.getName());
+            console.log('Image URL: ' + profile.getImageUrl());
+            console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
+
+            var id_token = googleUser.getAuthResponse().id_token;
+            fetch('http://localhost:8080/v1/auth/google', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+                ,
+                body: JSON.stringify({ google_token: id_token })
+            }).then(response => response.ok ? response.json() : Promise.reject(response))
+                .then(data => console.log(data.userAuth))
+                .catch(error => console.log(error))
+
+
+        }
+
+        function signOut() {
+            var auth2 = gapi.auth2.getAuthInstance();
+            auth2.signOut().then(function () {
+                console.log('User signed out.');
+            });
+        }
+
+    </script>
+
 </body>
 
 </html>

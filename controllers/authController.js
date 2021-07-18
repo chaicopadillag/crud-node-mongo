@@ -1,4 +1,5 @@
 const bcrypt = require('bcryptjs');
+const googleVerify = require('../helpers/googleAuth');
 const { generarJsonWebToken } = require('../helpers/jwt');
 const User = require('../models/user');
 
@@ -37,7 +38,7 @@ const login = async (req, res) => {
       });
     }
 
-    const token = await generarJsonWebToken(user._id);
+    const token = await generarJsonWebToken(user.id);
     res.json({
       user,
       token,
@@ -92,10 +93,55 @@ const userDelete = async (req, res) => {
   });
 };
 
+//TODO: googleAuth
+
+const googleAuth = async (req, res) => {
+  const { google_token } = req.body;
+
+  try {
+    const { name, email, image } = await googleVerify(google_token);
+
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      const userGoogle = {
+        name,
+        email,
+        password: ':P',
+        image,
+        google: true,
+      };
+
+      const user = new User(userGoogle);
+
+      await user.save();
+    }
+
+    if (!user.status) {
+      return res.status(401).json({
+        message: 'Usuario bloqueado hable con el administrator del sistema',
+      });
+    }
+
+    const token = await generarJsonWebToken(user.id);
+
+    return res.json({
+      userAuth: { user, token },
+    });
+  } catch (error) {
+    console.log(error);
+
+    return res.status(401).json({
+      message: 'El token de google no es válido',
+    });
+  }
+};
+
 module.exports = {
   login,
   register,
   userUpdate,
   getUsers,
   userDelete,
+  googleAuth,
 };

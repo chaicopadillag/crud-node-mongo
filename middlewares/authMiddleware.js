@@ -13,7 +13,7 @@ const authRegisterValidations = [
 ];
 
 const authUserUpdateValidations = [
-  check('userId', 'El ID no es válido').isMongoId().custom(existUserById),
+  check('userId', 'El ID no es válido').exists({ checkNull: true }).bail().isMongoId().bail().custom(existUserById),
   check('name', 'El nombre es requerido').not().isEmpty(),
   // check('email', 'El correo electrónico no es válido').isEmail().normalizeEmail().custom(emailExistInUser),
   check('password').isLength({ min: 6 }).withMessage('La contraseña deber más de 6 carácteres'),
@@ -25,7 +25,7 @@ const authUserDeleteValidations = [
   validarToken,
   esAdminRole,
   verificarRol('USER_ROLE', 'ADMIN_ROLE'),
-  check('userId', 'El ID no es válido').isMongoId().custom(existUserById),
+  check('userId', 'El ID no es válido').exists({ checkNull: true }).bail().isMongoId().bail().custom(existUserById),
   fieldsValidations,
 ];
 

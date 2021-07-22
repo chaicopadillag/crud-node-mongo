@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const rootRouter = require('../routers/rootRouter');
 const dbConexion = require('../database/dbConexion');
+const fileUpload = require('express-fileupload');
 
 class Server {
   constructor() {
@@ -16,6 +17,10 @@ class Server {
     await dbConexion();
   }
   middleware() {
+    this.app.use(fileUpload({
+      useTempFiles: true,
+      tempFileDir: '/tmp/'
+    }));
     this.app.use(cors());
     this.app.use(express.json());
     this.app.use(express.static('public'));

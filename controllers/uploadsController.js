@@ -1,4 +1,5 @@
 const path = require('path');
+const { v4: uuid } = require('uuid');
 
 const uploadPhotoProfile = (req, res) => {
 
@@ -17,8 +18,8 @@ const uploadPhotoProfile = (req, res) => {
             message: `El archivo enviado no es una imagen, solo archivos con extensión: ${extensionesPermitidas}`
         })
     }
-
-    const uploadPath = path.join(__dirname, '../uploads/', photo.name);
+    const fileName = `${uuid()}.${extension}`;
+    const uploadPath = path.join(__dirname, '../uploads/', fileName);
 
     photo.mv(uploadPath, function (err) {
         if (err) {

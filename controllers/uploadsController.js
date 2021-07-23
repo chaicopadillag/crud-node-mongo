@@ -1,34 +1,23 @@
-const path = require('path');
-const { v4: uuid } = require('uuid');
+const uploadFile = require("../helpers/uploadFile");
 
-const uploadPhotoProfile = (req, res) => {
 
-    if (!req.files || Object.keys(req.files).length === 0 || !req.files.photo) {
+const uploadPhotoProfile = async (req, res) => {
+
+    if (!req.files || Object.keys(req.files).length === 0 || !req.files.file) {
         return res.status(400).json({ message: 'No hay photo que subir...' });
     }
+    try {
+        const fileName = await uploadFile(req.files, undefined, 'img');
 
-    const { photo } = req.files;
+        return res.json({
+            fileName
+        });
 
-    // TODO: Validar Extensión
-    const nombreSeparado = photo.name.split('.');
-    const extension = nombreSeparado[nombreSeparado.length - 1];
-    const extensionesPermitidas = ['png', 'jpg', 'jpeg'];
-    if (!extensionesPermitidas.includes(extension)) {
+    } catch (error) {
         return res.status(400).json({
-            message: `El archivo enviado no es una imagen, solo archivos con extensión: ${extensionesPermitidas}`
-        })
+            error
+        });
     }
-    const fileName = `${uuid()}.${extension}`;
-    const uploadPath = path.join(__dirname, '../uploads/', fileName);
-
-    photo.mv(uploadPath, function (err) {
-        if (err) {
-            console.log(error)
-            return res.status(500).join(err);
-        }
-
-        res.json({ message: 'File uploaded! to ' + uploadPath });
-    });
 }
 
 

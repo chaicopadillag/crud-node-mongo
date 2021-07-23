@@ -19,7 +19,8 @@ class Server {
   middleware() {
     this.app.use(fileUpload({
       useTempFiles: true,
-      tempFileDir: '/tmp/'
+      tempFileDir: '/tmp/',
+      createParentPath: true,
     }));
     this.app.use(cors());
     this.app.use(express.json());

@@ -22,6 +22,7 @@ const ProductSchema = Schema({
     ref: 'Category',
     required: true,
   },
+  imgUrl: { type: String },
   description: { type: String },
   disposition: { type: Boolean, default: true },
 });

@@ -5,7 +5,7 @@ const authRouter = require('./authRouter');
 const categoryRouter = require('./categoryRouter');
 const productRouter = require('./productRouter');
 const searchRouter = require('./searchRouter');
-const uploadsRouter = require('./uploads');
+const uploadsRouter = require('./uploadsRouter');
 
 rootRouter.use('/auth', authRouter);
 rootRouter.use('/category', categoryRouter);
